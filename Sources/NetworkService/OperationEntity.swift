@@ -7,3 +7,4 @@
 
 import Foundation
 
+open class OperationEntity<Input, Output> {}

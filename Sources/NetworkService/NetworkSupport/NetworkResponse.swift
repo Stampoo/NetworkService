@@ -7,4 +7,8 @@
 
 import Foundation
 
-
+public struct NetworkResponse {
+    let data: Data?
+    let error: Error?
+    let response: URLResponse?
+}
