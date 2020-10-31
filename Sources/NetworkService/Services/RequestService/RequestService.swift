@@ -7,25 +7,38 @@
 
 import Foundation
 
-final class RequestService {
+open class RequestService<Route: NetworkRoute> {
     
     // MARK: - Typealias
     
     typealias DataTaskCompletion = (Data?, URLResponse?, Error?) -> Void
+    
+    // MARK: - Public properties
+    
+    weak var delegate: RequestServiceDelegate?
     
     // MARK: - Private properties
     
     private let session = URLSession(configuration: .default)
     private var dataTask: URLSessionDataTask?
     private let parameterEncoder = ParametersEncoder()
+    private var responseFromServer: NetworkResponse? {
+        willSet {
+            if let response = newValue {
+                delegate?.contentDidLoad(response)
+            }
+        }
+    }
     
     // MARK: - Public methods
     
-    func request(on route: NetworkRoute, _ completion: @escaping DataTaskCompletion) {
+    func request(on route: Route) {
         guard let urlRequest = request(from: route) else {
             return
         }
-        dataTask = session.dataTask(with: urlRequest, completionHandler: completion)
+        dataTask = session.dataTask(with: urlRequest) { [weak self] data, response, error in
+            self?.responseFromServer = .init(data: data, error: error, response: response)
+        }
         dataTask?.resume()
     }
     

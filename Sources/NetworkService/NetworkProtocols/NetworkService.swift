@@ -9,10 +9,12 @@ import Foundation
 
 open class NetworkService<Input, Output> {
     
-    var nextService: NetworkService = NetworkService()
+    var nextService: NetworkService {
+        fatalError("override this property!")
+    }
     
     func throwNext(_ data: NetworkResponse) -> OperationEntity<Output> {
-        OperationEntity()
+        fatalError("override this method!")
     }
 
 }

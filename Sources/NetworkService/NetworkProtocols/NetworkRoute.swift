@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol NetworkRoute {
+public protocol NetworkRoute {
     var completeURL: URL? { get }
     var baseLink: String { get }
     var path: String { get }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Parameters {
+public enum Parameters {
     case string
     case json
     case url

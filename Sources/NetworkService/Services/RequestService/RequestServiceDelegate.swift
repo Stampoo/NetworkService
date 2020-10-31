@@ -7,6 +7,6 @@
 
 import Foundation
 
-public enum RequestMethod: String {
-    case GET = "GET"
+protocol RequestServiceDelegate: class {
+    func contentDidLoad(_ response: NetworkResponse)
 }

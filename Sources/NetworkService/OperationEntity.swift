@@ -37,4 +37,16 @@ open class OperationEntity<Model> {
         return self
     }
     
+    @discardableResult
+    func add(_ data: Model) -> Self {
+        writtenData = data
+        return self
+    }
+    
+    @discardableResult
+    func add(_ error: Error) -> Self {
+        writtenError = error
+        return self
+    }
+    
 }
