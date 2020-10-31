@@ -23,7 +23,7 @@ open class SessionManager<Route: NetworkRoute> {
         requestService.delegate = self
     }
     
-    func startSession(on request: Route) {
+    public func startSession(on request: Route) {
         requestService.request(on: request)
     }
 
