@@ -19,7 +19,7 @@ open class SessionManager<Route: NetworkRoute> {
     
     // MARK: - Initializers
     
-    init() {
+    public init() {
         requestService.delegate = self
     }
     
