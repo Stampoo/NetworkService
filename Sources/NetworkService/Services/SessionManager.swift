@@ -12,7 +12,7 @@ open class SessionManager<Route: NetworkRoute> {
     // MARK: - Public properties
     
     var response: NetworkResponse?
-    var entity: OperationEntity<Json>?
+    var entity: OperationEntity<Json> = .init()
     
     // MARK: - Private properties
     
