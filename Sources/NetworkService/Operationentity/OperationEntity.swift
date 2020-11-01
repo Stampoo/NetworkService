@@ -7,7 +7,11 @@
 
 import Foundation
 
-open class OperationEntity<Model> {
+open class OperationEntity<Model>: EntityService {
+    
+    // MARK: - Typealias
+    
+    public typealias Model = Model
     
     // MARK: - Private properties
     
@@ -19,7 +23,8 @@ open class OperationEntity<Model> {
     
     // MARK: - Public methods
     
-    func onComplete(_ completionHandler: ((Model) -> Void)?) -> Self {
+    @discardableResult
+    public func onCompleted(_ completionHandler: ((Model) -> Void)?) -> Self {
         guard let dataInEntity = writtenData else {
             return self
         }
@@ -28,7 +33,8 @@ open class OperationEntity<Model> {
         return self
     }
     
-    func onError(_ errorHandler: ((Error) -> Void)?) -> Self {
+    @discardableResult
+    public func onError(_ errorHandler: ((Error) -> Void)?) -> Self {
         guard let errorInEntity = writtenError else {
             return self
         }
@@ -49,4 +55,13 @@ open class OperationEntity<Model> {
         return self
     }
     
+}
+
+extension OperationEntity: RequestServiceDelegate {
+    
+    func contentDidLoad(_ response: NetworkResponse) {
+        let handlingCycle = HandlingCycle(response)
+        handlingCycle.startResponseCycle()
+    }
+
 }

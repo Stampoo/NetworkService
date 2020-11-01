@@ -12,6 +12,7 @@ open class SessionManager<Route: NetworkRoute> {
     // MARK: - Public properties
     
     var response: NetworkResponse?
+    var entity: OperationEntity<Json>?
     
     // MARK: - Private properties
     
@@ -23,8 +24,10 @@ open class SessionManager<Route: NetworkRoute> {
         requestService.delegate = self
     }
     
-    public func startSession(on request: Route) {
+    @discardableResult
+    public func startSession(on request: Route) -> OperationEntity<Json>? {
         requestService.request(on: request)
+        return entity
     }
 
 }
@@ -34,7 +37,8 @@ open class SessionManager<Route: NetworkRoute> {
 extension SessionManager: RequestServiceDelegate {
 
     func contentDidLoad(_ response: NetworkResponse) {
-        print(response)
+        let handlingCycle = HandlingCycle(response)
+        entity = handlingCycle.startResponseCycle().throwNext(response)
     }
     
 }
