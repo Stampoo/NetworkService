@@ -38,7 +38,7 @@ extension SessionManager: RequestServiceDelegate {
 
     func contentDidLoad(_ response: NetworkResponse) {
         let handlingCycle = HandlingCycle(response)
-        entity = handlingCycle.startResponseCycle().throwNext(response)
+        entity.devouring(handlingCycle.startResponseCycle().throwNext(response))
     }
     
 }

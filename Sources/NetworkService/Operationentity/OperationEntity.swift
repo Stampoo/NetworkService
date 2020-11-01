@@ -13,12 +13,12 @@ open class OperationEntity<Model>: EntityService {
     
     public typealias Model = Model
     
-    // MARK: - Private properties
+    // MARK: - Public properties
     
-    private var completionHandler: ((Model) -> Void)?
-    private var errorHandler: ((Error) -> Void)?
-    private var writtenData: Model?
-    private var writtenError: Error?
+    private(set) var completionHandler: ((Model) -> Void)?
+    private(set) var errorHandler: ((Error) -> Void)?
+    private(set) var writtenData: Model?
+    private(set) var writtenError: Error?
 
     
     // MARK: - Public methods
@@ -46,13 +46,24 @@ open class OperationEntity<Model>: EntityService {
     @discardableResult
     func add(_ data: Model) -> Self {
         writtenData = data
+        completionHandler?(data)
         return self
     }
     
     @discardableResult
     func add(_ error: Error) -> Self {
         writtenError = error
+        errorHandler?(error)
         return self
+    }
+    
+    func devouring(_ entity: OperationEntity<Model>) {
+        if let data = entity.writtenData {
+            add(data)
+        }
+        if let error = entity.writtenError {
+            add(error)
+        }
     }
     
 }

@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Parameters.swift
 //  
 //
 //  Created by Илья Князьков on 31/10/2020.
