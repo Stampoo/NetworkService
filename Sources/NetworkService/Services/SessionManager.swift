@@ -12,7 +12,7 @@ open class SessionManager<Route: NetworkRoute> {
     // MARK: - Public properties
     
     var response: NetworkResponse?
-    var entity: OperationEntity<Json> = .init()
+    public var entity: OperationEntity<Json> = .init()
     
     // MARK: - Private properties
     
@@ -25,7 +25,7 @@ open class SessionManager<Route: NetworkRoute> {
     }
     
     @discardableResult
-    public func startSession(on request: Route) -> OperationEntity<Json>? {
+    public func startSession(on request: Route) -> OperationEntity<Json> {
         requestService.request(on: request)
         return entity
     }
