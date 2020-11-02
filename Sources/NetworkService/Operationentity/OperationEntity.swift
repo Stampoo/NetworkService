@@ -26,20 +26,20 @@ open class OperationEntity<Model>: EntityService {
     
     @discardableResult
     public func onCompleted(_ completionHandler: ((Model) -> Void)?) -> Self {
+        defer { self.completionHandler = completionHandler }
         guard let dataInEntity = writtenData else {
             return self
         }
-        self.completionHandler = completionHandler
         self.completionHandler?(dataInEntity)
         return self
     }
     
     @discardableResult
     public func onError(_ errorHandler: ((Error) -> Void)?) -> Self {
+        defer { self.errorHandler = errorHandler }
         guard let errorInEntity = writtenError else {
             return self
         }
-        self.errorHandler = errorHandler
         self.errorHandler?(errorInEntity)
         return self
     }
