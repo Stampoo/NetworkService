@@ -19,6 +19,7 @@ open class OperationEntity<Model>: EntityService {
     private(set) var errorHandler: ((Error) -> Void)?
     private(set) var writtenData: Model?
     private(set) var writtenError: Error?
+    public var count = 0
 
     
     // MARK: - Public methods
@@ -70,9 +71,6 @@ open class OperationEntity<Model>: EntityService {
 
 extension OperationEntity: RequestServiceDelegate {
     
-    func contentDidLoad(_ response: NetworkResponse) {
-        let handlingCycle = HandlingCycle(response)
-        handlingCycle.startResponseCycle()
-    }
+    func contentDidLoad(_ response: NetworkResponse) { }
 
 }
