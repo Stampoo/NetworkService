@@ -21,7 +21,6 @@ open class RequestService<Route: NetworkRoute> {
     
     private let session = URLSession(configuration: .default)
     private var dataTask: URLSessionDataTask?
-    private let parameterEncoder = ParametersEncoder()
     private var responseFromServer: NetworkResponse? {
         willSet {
             if let response = newValue {
@@ -52,11 +51,11 @@ open class RequestService<Route: NetworkRoute> {
         request.httpMethod = route.requestMethod.rawValue
         switch route.requestType {
         case .request:
-            parameterEncoder.addParametersTo(request: &request, with: nil, type: .string)
+            ParametersEncoder.shared.addParametersTo(request: &request, with: nil, type: .string)
         case let .requestWithParam(param):
-            parameterEncoder.addParametersTo(request: &request, with: param, type: .string)
+            ParametersEncoder.shared.addParametersTo(request: &request, with: param, type: .string)
         case let .requestWithParamAndHeaders(param, _):
-            parameterEncoder.addParametersTo(request: &request, with: param, type: .string)
+            ParametersEncoder.shared.addParametersTo(request: &request, with: param, type: .string)
         }
         return request
     }

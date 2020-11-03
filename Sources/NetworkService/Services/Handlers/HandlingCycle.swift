@@ -19,6 +19,8 @@ open class HandlingCycle {
         self.response = response
     }
     
+    // MARK: - Public methods
+    
     @discardableResult
     func startResponseCycle() -> NetworkService<NetworkResponse, Json> {
         let contentHandler = ContentHandler()

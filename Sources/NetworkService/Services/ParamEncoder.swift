@@ -9,20 +9,22 @@ import Foundation
 
 final class ParametersEncoder {
 
-    //MARK: - Constants
+    // MARK: - Constants
 
     private enum Constants: String {
         case json = "application/json"
         case string = "application/x-www-form-urlencoded; charset=utf-8"
     }
 
-
-    //MARK: - Public properties
+    // MARK: - Public properties
 
     static let shared = ParametersEncoder()
+    
+    // MARK: - Initializers
+    
+    private init() { }
 
-
-    //MARK: - Public methods
+    // MARK: - Public methods
 
     func addParametersTo(request: inout URLRequest,
                          with parameters: [String: Any]?,
@@ -32,19 +34,18 @@ final class ParametersEncoder {
         }
         switch type {
         case .string:
-            addParametersToBodyFromString(parameters: parameters, request: &request)
+            addParametersToBodyFromString(parameters, &request)
         case .json:
-            addParametersToBodyFromDict(parameters: parameters, request: &request)
+            addParametersToBodyFromDict(parameters, &request)
         case .url:
-            addParametersToURLFromDict(parameters: parameters, request: &request)
+            addParametersToURLFromDict(parameters, &request)
         }
     }
 
-
     //MARK: - Private methods
 
-    private func addParametersToBodyFromString(parameters: [String: Any],
-                                               request: inout URLRequest) {
+    private func addParametersToBodyFromString(_ parameters: [String: Any],
+                                               _ request: inout URLRequest) {
         var count = 0
         var bodyString = ""
         for (key, value) in parameters {
@@ -55,27 +56,26 @@ final class ParametersEncoder {
                 bodyString += "\(key)=\(value)&"
             }
         }
-        let encodeString = bodyString.data(using: .utf8)
-        request.httpBody = encodeString
+        request.httpBody = bodyString.data(using: .utf8)
     }
 
-    private func addParametersToBodyFromDict(parameters: [String: Any],
-                                             request: inout URLRequest) {
-        let json = try? JSONSerialization.data(withJSONObject: parameters, options: [])
-        request.httpBody = json
+    private func addParametersToBodyFromDict(_ parameters: [String: Any],
+                                             _ request: inout URLRequest) {
+        request.httpBody = try? JSONSerialization.data(withJSONObject: parameters,
+                                                       options: [])
     }
 
-    private func addParametersToURLFromDict(parameters: [String: Any],
-                                            request: inout URLRequest) {
+    private func addParametersToURLFromDict(_ parameters: [String: Any],
+                                            _ request: inout URLRequest) {
         guard let url = request.url,
-            var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            var urlComponents = URLComponents(
+                url: url,
+                resolvingAgainstBaseURL: false
+            ) else {
                 return
         }
-        urlComponents.queryItems = []
-        for (key, value) in parameters {
-            let formattedValue = "\(value)".addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
-            let urlQueryItem = URLQueryItem(name: key, value: formattedValue)
-            urlComponents.queryItems?.append(urlQueryItem)
+        urlComponents.queryItems = parameters.map {
+            .init(name: $0.key, value: "\($0.value)".addingPercentEncoding(withAllowedCharacters: .urlHostAllowed))
         }
         request.url = urlComponents.url
     }

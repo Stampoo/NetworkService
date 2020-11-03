@@ -11,8 +11,8 @@ open class SessionManager<Route: NetworkRoute> {
     
     // MARK: - Public properties
     
-    var response: NetworkResponse?
-    public var entity: OperationEntity<Json> = .init()
+    private var response: NetworkResponse?
+    private var entity: OperationEntity<Json> = .init()
     
     // MARK: - Private properties
     
@@ -39,9 +39,6 @@ extension SessionManager: RequestServiceDelegate {
     func contentDidLoad(_ response: NetworkResponse) {
         let handlingCycle = HandlingCycle(response)
         entity.devouring(handlingCycle.startResponseCycle().throwNext(response))
-        entity.count += 1
-        print(entity.count)
-        print(entity)
     }
     
 }
