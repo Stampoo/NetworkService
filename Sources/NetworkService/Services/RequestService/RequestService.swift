@@ -52,9 +52,12 @@ open class RequestService<Route: NetworkRoute> {
         switch route.requestType {
         case .request:
             ParametersEncoder.shared.addParametersTo(request: &request, with: nil, type: .string)
-        case let .requestWithParam(param):
+        case .requestWithParam(let param):
             ParametersEncoder.shared.addParametersTo(request: &request, with: param, type: .string)
-        case let .requestWithParamAndHeaders(param, _):
+        case .requestWithHeaders(let headers):
+            headers.forEach { request.addValue($0.key, forHTTPHeaderField: "\($0.value)") }
+        case let .requestWithParamAndHeaders(param, headers):
+            headers.forEach { request.addValue($0.key, forHTTPHeaderField: "\($0.value)") }
             ParametersEncoder.shared.addParametersTo(request: &request, with: param, type: .string)
         }
         return request
