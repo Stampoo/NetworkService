@@ -14,3 +14,11 @@ public protocol NetworkRoute {
     var requestType: RequestType { get }
     var requestMethod: RequestMethod { get }
 }
+
+extension NetworkRoute {
+    
+    var completeURL: URL? {
+        URL(string: baseLink + path)
+    }
+
+}
