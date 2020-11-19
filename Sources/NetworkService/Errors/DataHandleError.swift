@@ -14,7 +14,7 @@ public enum DataHandleError {
 
 extension DataHandleError: LocalizedError {
     
-    var localizedDescription: String {
+    public var errorDescription: String? {
         switch self {
         case .dataHandleError:
             return "Error map data in Json!"

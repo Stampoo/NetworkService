@@ -9,7 +9,7 @@ import Foundation
 
 public enum RequestType {
     case request
-    case requestWithParam(_ param: [String: Any])
-    case requestWithHeaders(_ headers: [String: Any])
-    case requestWithParamAndHeaders(_ param: [String: Any], _ header: [String: Any])
+    case requestWithParam(_ param: Parameters)
+    case requestWithHeaders(_ headers: Json)
+    case requestWithParamAndHeaders(_ param: Parameters, _ header: Json)
 }

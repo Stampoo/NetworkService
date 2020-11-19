@@ -23,22 +23,25 @@ open class RequestService<Route: NetworkRoute> {
     private var dataTask: URLSessionDataTask?
     private var responseFromServer: NetworkResponse? {
         willSet {
-            if let response = newValue {
-                delegate?.contentDidLoad(response)
-            }
+            delegate?.contentDidLoad(newValue)
         }
     }
     
     // MARK: - Public methods
     
-    func request(on route: Route) {
+    @discardableResult
+    func request(on route: Route) -> Result<Void, Error> {
         guard let urlRequest = request(from: route) else {
-            return
+            return .failure(NetworkError.badRequest)
         }
         dataTask = session.dataTask(with: urlRequest) { [weak self] data, response, error in
-            self?.responseFromServer = .init(data: data, error: error, response: response)
+            guard let self = self else {
+                return
+            }
+            self.responseFromServer = .init(data: data, error: error, response: response)
         }
         dataTask?.resume()
+        return .success(Void())
     }
     
     // MARK: - Private methods
@@ -51,14 +54,18 @@ open class RequestService<Route: NetworkRoute> {
         request.httpMethod = route.requestMethod.rawValue
         switch route.requestType {
         case .request:
-            ParametersEncoder.shared.addParametersTo(request: &request, with: nil, type: .string)
+            break
         case .requestWithParam(let param):
-            ParametersEncoder.shared.addParametersTo(request: &request, with: param, type: .string)
+            ParametersEncoder.shared.addParametersTo(request: &request,
+                                                     with: param.parameters,
+                                                     type: param.codingType)
         case .requestWithHeaders(let headers):
             headers.forEach { request.addValue($0.key, forHTTPHeaderField: "\($0.value)") }
         case let .requestWithParamAndHeaders(param, headers):
             headers.forEach { request.addValue($0.key, forHTTPHeaderField: "\($0.value)") }
-            ParametersEncoder.shared.addParametersTo(request: &request, with: param, type: .string)
+            ParametersEncoder.shared.addParametersTo(request: &request,
+                                                     with: param.parameters,
+                                                     type: param.codingType)
         }
         return request
     }

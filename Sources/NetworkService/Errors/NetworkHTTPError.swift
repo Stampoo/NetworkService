@@ -15,7 +15,7 @@ public enum NetworkHTTPError {
 
 extension NetworkHTTPError: LocalizedError {
     
-    var localizedDescription: String {
+    public var errorDescription: String? {
         switch self {
         case .badRequest:
             return "Bad request!"

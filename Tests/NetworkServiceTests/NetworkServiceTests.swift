@@ -8,7 +8,7 @@ final class NetworkServiceTests: XCTestCase {
     private let networkService = SessionManager<TestRoute>()
     
     func testRequest() {
-        let expectationResult = XCTestExpectation(description: "Json loading success!")
+        let expectationResult = XCTestExpectation(description: "My expectation")
         networkService.startSession(on: .test)
             .onCompleted { _ in
                 expectationResult.fulfill()
@@ -19,6 +19,8 @@ final class NetworkServiceTests: XCTestCase {
     }
     
 }
+
+// MARK: - Moke data
 
 enum TestRoute {
     case test

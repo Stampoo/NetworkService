@@ -28,12 +28,12 @@ final class ParametersEncoder {
 
     func addParametersTo(request: inout URLRequest,
                          with parameters: [String: Any]?,
-                         type: Parameters) {
+                         type: ParametrCodingType) {
         guard let parameters = parameters else {
             return
         }
         switch type {
-        case .string:
+        case .body:
             addParametersToBodyFromString(parameters, &request)
         case .json:
             addParametersToBodyFromDict(parameters, &request)

@@ -36,7 +36,11 @@ open class SessionManager<Route: NetworkRoute> {
 
 extension SessionManager: RequestServiceDelegate {
 
-    func contentDidLoad(_ response: NetworkResponse) {
+    func contentDidLoad(_ response: NetworkResponse?) {
+        guard let response = response else {
+            entity.add(NetworkError.badResponse)
+            return
+        }
         let handlingCycle = HandlingCycle(response)
         entity.devouring(handlingCycle.startResponseCycle().throwNext(response))
     }

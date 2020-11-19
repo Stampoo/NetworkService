@@ -8,5 +8,5 @@
 import Foundation
 
 protocol RequestServiceDelegate: class {
-    func contentDidLoad(_ response: NetworkResponse)
+    func contentDidLoad(_ response: NetworkResponse?)
 }
