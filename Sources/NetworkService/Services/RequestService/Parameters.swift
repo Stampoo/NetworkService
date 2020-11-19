@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum ParametrCodingType {
+public enum ParametrCodingType {
     case body
     case url
     case json
@@ -17,7 +17,7 @@ public struct Parameters {
     let parameters: Json
     let codingType: ParametrCodingType
     
-    init(param: Json, _ codingType: ParametrCodingType = .url) {
+    public init(param: Json, _ codingType: ParametrCodingType = .url) {
         parameters = param
         self.codingType = codingType
     }
