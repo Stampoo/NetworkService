@@ -7,15 +7,19 @@ final class NetworkServiceTests: XCTestCase {
     
     private let networkService = SessionManager<TestRoute>()
     
-    func testRequest() {
+    func testForTestRequest() {
         let expectationResult = XCTestExpectation(description: "Json loading success!")
-        networkService.startSession(on: .test)
+        testRequest()
             .onCompleted { _ in
                 expectationResult.fulfill()
             }.onError {
-                XCTFail("\($0)")
+                XCTFail($0.localizedDescription)
         }
         wait(for: [expectationResult], timeout: 3.0)
+    }
+    
+    func testRequest() -> OperationEntity<Test> {
+        networkService.startSession(on: .test)
     }
     
 }
@@ -43,3 +47,5 @@ extension TestRoute: NetworkRoute {
     }
 
 }
+
+struct Test: Codable { }

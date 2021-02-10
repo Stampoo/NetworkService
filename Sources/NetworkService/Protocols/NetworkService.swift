@@ -9,7 +9,7 @@ import Foundation
 
 open class NetworkService<Input, Output> {
     
-    func throwNext(_ data: NetworkResponse) -> OperationEntity<Output> {
+    func throwNext(_ data: Response) -> OperationEntity<Output> {
         fatalError("override this method!")
     }
 

@@ -11,34 +11,25 @@ open class SessionManager<Route: NetworkRoute> {
     
     // MARK: - Public properties
     
-    private var response: NetworkResponse?
-    private var entity: OperationEntity<Json> = .init()
+    private var response: Response?
     
     // MARK: - Private properties
     
-    private let requestService = RequestService<Route>()
+    private let requestService = Core<Route>()
     
     // MARK: - Initializers
     
-    public init() {
-        requestService.delegate = self
-    }
+    public init() { }
     
     @discardableResult
-    public func startSession(on request: Route) -> OperationEntity<Json> {
+    public func startSession<Model: Codable>(on request: Route) -> OperationEntity<Model> {
+        let newEntity = OperationEntity<Model>()
+        requestService.didDownloadEvent.addListener { response in
+            let handlingCycle = HandlingCycle<Model>(response)
+            newEntity.devouring(handlingCycle.startResponseCycle().throwNext(response))
+        }
         requestService.request(on: request)
-        return entity
+        return newEntity
     }
 
-}
-
-// MARK: - Extensions
-
-extension SessionManager: RequestServiceDelegate {
-
-    func contentDidLoad(_ response: NetworkResponse) {
-        let handlingCycle = HandlingCycle(response)
-        entity.devouring(handlingCycle.startResponseCycle().throwNext(response))
-    }
-    
 }

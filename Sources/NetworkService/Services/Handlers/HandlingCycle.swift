@@ -7,23 +7,23 @@
 
 import Foundation
 
-open class HandlingCycle {
+open class HandlingCycle<Model: Codable> {
     
     // MARK: - Private properties
     
-    private let response: NetworkResponse
+    private let response: Response
     
     // MARK: - Initializers
     
-    public init(_ response: NetworkResponse) {
+    public init(_ response: Response) {
         self.response = response
     }
     
     // MARK: - Public methods
     
     @discardableResult
-    func startResponseCycle() -> NetworkService<NetworkResponse, Json> {
-        let contentHandler = ContentHandler()
+    func startResponseCycle() -> NetworkService<Response, Model> {
+        let contentHandler = ContentHandler<Model>()
         let errorHandler = ErrorHandler(next: contentHandler)
         let responseHandler = HTTPErrorHandler(next: errorHandler)
         return responseHandler

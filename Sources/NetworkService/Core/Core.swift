@@ -7,27 +7,16 @@
 
 import Foundation
 
-open class RequestService<Route: NetworkRoute> {
-    
-    // MARK: - Typealias
-    
-    typealias DataTaskCompletion = (Data?, URLResponse?, Error?) -> Void
+final class Core<Route: NetworkRoute> {
     
     // MARK: - Public properties
     
-    weak var delegate: RequestServiceDelegate?
+    var didDownloadEvent = Event<Response>()
     
     // MARK: - Private properties
     
     private let session = URLSession(configuration: .default)
     private var dataTask: URLSessionDataTask?
-    private var responseFromServer: NetworkResponse? {
-        willSet {
-            if let response = newValue {
-                delegate?.contentDidLoad(response)
-            }
-        }
-    }
     
     // MARK: - Public methods
     
@@ -36,7 +25,10 @@ open class RequestService<Route: NetworkRoute> {
             return
         }
         dataTask = session.dataTask(with: urlRequest) { [weak self] data, response, error in
-            self?.responseFromServer = .init(data: data, error: error, response: response)
+            guard let self = self else {
+                return
+            }
+            self.didDownloadEvent.add(.init(data: data, error: error, response: response))
         }
         dataTask?.resume()
     }

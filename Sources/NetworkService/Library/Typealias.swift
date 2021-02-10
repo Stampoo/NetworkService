@@ -8,3 +8,4 @@
 import Foundation
 
 public typealias Json = [String: Any]
+public typealias Closure<Model> = (Model) -> Void

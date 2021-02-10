@@ -7,27 +7,27 @@
 
 import Foundation
 
-open class ErrorHandler<Output>: NetworkService<NetworkResponse, Output> {
+open class ErrorHandler<Output>: NetworkService<Response, Output> {
     
     // MARK: - Public methods
     
-    let nextService: NetworkService<NetworkResponse, Output>
+    let nextService: NetworkService<Response, Output>
     
     // MARK: - Initializers
     
-    public init(next: NetworkService<NetworkResponse, Output>) {
+    public init(next: NetworkService<Response, Output>) {
         nextService = next
     }
     
     // MARK: - Public methods
     
-    override func throwNext(_ data: NetworkResponse) -> OperationEntity<Output> {
+    override func throwNext(_ data: Response) -> OperationEntity<Output> {
         return handlingError(data)
     }
     
     // MARK: - Private methods
     
-    private func handlingError(_ data: NetworkResponse) -> OperationEntity<Output> {
+    private func handlingError(_ data: Response) -> OperationEntity<Output> {
         guard let error = data.error else {
             print("Запрос выполнен успешно")
             return nextService.throwNext(data)

@@ -7,12 +7,11 @@
 
 import Foundation
 
-open class HTTPErrorHandler<Output>: NetworkService<NetworkResponse, Output> {
+open class HTTPErrorHandler<Output>: NetworkService<Response, Output> {
     
     // MARK: - Constants
     
     private enum Constants: Int {
-        case specialCode = 99999
         case badRequest = 400
         case notFound = 404
         case success = 200
@@ -20,36 +19,31 @@ open class HTTPErrorHandler<Output>: NetworkService<NetworkResponse, Output> {
     
     // MARK: - Public properties
     
-    let nextService: NetworkService<NetworkResponse, Output>
+    let nextService: NetworkService<Response, Output>
     
     // MARK: - Initializers
     
-    public init(next: NetworkService<NetworkResponse, Output>) {
+    public init(next: NetworkService<Response, Output>) {
         nextService = next
     }
     
     // MARK: - Public methods
     
-    override func throwNext(_ data: NetworkResponse) -> OperationEntity<Output> {
+    override func throwNext(_ data: Response) -> OperationEntity<Output> {
         return codeHandler(data)
     }
     
     // MARK: - Private methods
     
-    func codeHandler(_ data: NetworkResponse) -> OperationEntity<Output> {
-        let response = data.response as? HTTPURLResponse
-        let code = response?.statusCode ?? 99999
+    func codeHandler(_ data: Response) -> OperationEntity<Output> {
         let entity = OperationEntity<Output>()
-        switch code {
+        switch data.code {
         case Constants.success.rawValue:
             return nextService.throwNext(data)
         case Constants.badRequest.rawValue:
             return entity.add(NetworkHTTPError.badRequest)
-        case Constants.specialCode.rawValue:
-            return entity
-                .add(NetworkHTTPError.unknownError(Constants.specialCode.rawValue))
         default:
-            return entity.add(NetworkHTTPError.unknownError(code))
+            return entity.add(NetworkHTTPError.unknownError(data.code))
         }
     }
     

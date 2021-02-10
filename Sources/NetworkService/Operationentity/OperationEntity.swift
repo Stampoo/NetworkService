@@ -19,8 +19,15 @@ open class OperationEntity<Model>: EntityService {
     private(set) var errorHandler: ((Error) -> Void)?
     private(set) var writtenData: Model?
     private(set) var writtenError: Error?
+    private(set) var queueType: QueueType = .main
     
     // MARK: - Public methods
+    
+    @discardableResult
+    public func inQueue(_ queue: QueueType) -> Self {
+        queueType = queue
+        return self
+    }
     
     @discardableResult
     public func onCompleted(_ completionHandler: ((Model) -> Void)?) -> Self {
@@ -28,7 +35,9 @@ open class OperationEntity<Model>: EntityService {
         guard let dataInEntity = writtenData else {
             return self
         }
-        self.completionHandler?(dataInEntity)
+        runInQueue {
+            completionHandler?(dataInEntity)
+        }
         return self
     }
     
@@ -38,21 +47,27 @@ open class OperationEntity<Model>: EntityService {
         guard let errorInEntity = writtenError else {
             return self
         }
-        self.errorHandler?(errorInEntity)
+        runInQueue { [weak self] in
+            self?.errorHandler?(errorInEntity)
+        }
         return self
     }
     
     @discardableResult
     func add(_ data: Model) -> Self {
         writtenData = data
-        completionHandler?(data)
+        runInQueue { [weak self] in
+            self?.completionHandler?(data)
+        }
         return self
     }
     
     @discardableResult
     func add(_ error: Error) -> Self {
         writtenError = error
-        errorHandler?(error)
+        runInQueue { [weak self] in
+            self?.errorHandler?(error)
+        }
         return self
     }
     
@@ -62,6 +77,23 @@ open class OperationEntity<Model>: EntityService {
         }
         if let error = entity.writtenError {
             add(error)
+        }
+    }
+    
+    // MARK: - Private methods
+    
+    func runInQueue(_ block: @escaping () -> Void) {
+        let queue: DispatchQueue
+        switch queueType {
+        case .main:
+            queue = DispatchQueue.main
+        case .utility:
+            queue = DispatchQueue.global(qos: .utility)
+        case .background:
+            queue = DispatchQueue.global(qos: .background)
+        }
+        queue.async {
+            block()
         }
     }
     
