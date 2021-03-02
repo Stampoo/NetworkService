@@ -11,7 +11,6 @@ public protocol NetworkRoute {
     var completeURL: URL? { get }
     var baseLink: String { get }
     var path: String { get }
-    var requestType: RequestType { get }
     var requestMethod: RequestMethod { get }
 }
 

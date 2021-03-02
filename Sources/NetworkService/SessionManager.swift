@@ -22,7 +22,9 @@ open class SessionManager<Route: NetworkRoute> {
     public init() { }
     
     @discardableResult
-    public func startSession<Model: Codable>(on request: Route) -> OperationEntity<Model> {
+    public func startSession<Model: Codable>(on request: Route,
+                                             param: Parameters = .url(),
+                                             headers: Json = [:]) -> OperationEntity<Model> {
         let newEntity = OperationEntity<Model>()
         requestService.didDownloadEvent.addListener { response in
             let handlingCycle = HandlingCycle<Model>(response)

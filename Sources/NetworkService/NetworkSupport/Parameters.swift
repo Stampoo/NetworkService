@@ -8,7 +8,7 @@
 import Foundation
 
 public enum Parameters {
-    case string
-    case json
-    case url
+    case string(_ json: Json = [:])
+    case json(_ json: Json = [:])
+    case url(_ json: Json = [:])
 }

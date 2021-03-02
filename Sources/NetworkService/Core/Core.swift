@@ -20,7 +20,9 @@ final class Core<Route: NetworkRoute> {
     
     // MARK: - Public methods
     
-    func request(on route: Route) {
+    func request(on route: Route,
+                 param: Parameters = .url(),
+                 headers: Json = [:]) {
         guard let urlRequest = request(from: route) else {
             return
         }
@@ -35,24 +37,38 @@ final class Core<Route: NetworkRoute> {
     
     // MARK: - Private methods
     
-    private func request(from route: NetworkRoute) -> URLRequest? {
+    private func request(from route: NetworkRoute,
+                         param: Parameters = .url(),
+                         headers: Json = [:]) -> URLRequest? {
         guard let url = route.completeURL else {
             return nil
         }
         var request = URLRequest(url: url)
         request.httpMethod = route.requestMethod.rawValue
-        switch route.requestType {
-        case .request:
-            ParametersEncoder.shared.addParametersTo(request: &request, with: nil, type: .string)
-        case .requestWithParam(let param):
-            ParametersEncoder.shared.addParametersTo(request: &request, with: param, type: .string)
-        case .requestWithHeaders(let headers):
-            headers.forEach { request.addValue($0.key, forHTTPHeaderField: "\($0.value)") }
-        case let .requestWithParamAndHeaders(param, headers):
-            headers.forEach { request.addValue($0.key, forHTTPHeaderField: "\($0.value)") }
-            ParametersEncoder.shared.addParametersTo(request: &request, with: param, type: .string)
-        }
+        addParam(param, request: &request)
+        addHeaders(headers, request: &request)
         return request
     }
-
+    
+    private func addParam(_ param: Parameters, request: inout URLRequest) {
+        guard let url = request.url,
+            var urlComponent = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
+                return
+        }
+        switch param {
+        case .string(let params):
+            urlComponent.queryItems = params.map { URLQueryItem(name: $0, value: "\($1)") }
+            request.httpBody = urlComponent.query?.data(using: .utf8)
+        case .json(let params):
+            request.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
+        case .url(let params):
+            urlComponent.queryItems = params.map { URLQueryItem(name: $0, value: "\($1)") }
+            request.url = urlComponent.url
+        }
+    }
+    
+    private func addHeaders(_ headers: Json, request: inout URLRequest) {
+        headers.forEach { request.addValue($0, forHTTPHeaderField: "\($1)") }
+    }
+    
 }
