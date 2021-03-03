@@ -23,7 +23,7 @@ final class Core<Route: NetworkRoute> {
     func request(on route: Route,
                  param: Parameters = .url(),
                  headers: Json = [:]) {
-        guard let urlRequest = request(from: route) else {
+        guard let urlRequest = request(from: route, param: param, headers: headers) else {
             return
         }
         dataTask = session.dataTask(with: urlRequest) { [weak self] data, response, error in

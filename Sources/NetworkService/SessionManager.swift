@@ -30,7 +30,7 @@ open class SessionManager<Route: NetworkRoute> {
             let handlingCycle = HandlingCycle<Model>(response)
             newEntity.devouring(handlingCycle.startResponseCycle().throwNext(response))
         }
-        requestService.request(on: request)
+        requestService.request(on: request, param: param, headers: headers)
         return newEntity
     }
 

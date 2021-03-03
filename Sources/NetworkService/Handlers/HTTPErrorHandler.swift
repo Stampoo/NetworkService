@@ -43,6 +43,7 @@ open class HTTPErrorHandler<Output>: NetworkService<Response, Output> {
         case Constants.badRequest.rawValue:
             return entity.add(NetworkHTTPError.badRequest)
         default:
+            print(data.response, data.json)
             return entity.add(NetworkHTTPError.unknownError(data.code))
         }
     }

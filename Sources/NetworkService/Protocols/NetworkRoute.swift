@@ -14,7 +14,7 @@ public protocol NetworkRoute {
     var requestMethod: RequestMethod { get }
 }
 
-extension NetworkRoute {
+public extension NetworkRoute {
     
     var completeURL: URL? {
         URL(string: baseLink + path)
