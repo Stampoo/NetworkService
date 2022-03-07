@@ -41,10 +41,10 @@ open class HTTPErrorHandler<Output>: NetworkService<Response, Output> {
         case Constants.success.rawValue:
             return nextService.throwNext(data)
         case Constants.badRequest.rawValue:
-            return entity.add(NetworkHTTPError.badRequest)
+            return entity.add(NSError())
         default:
             debugPrint(data.response ?? URLResponse())
-            return entity.add(NetworkHTTPError.unknownError(data.code))
+            return entity.add(NSError())
         }
     }
     

@@ -20,7 +20,7 @@ open class ContentHandler<Output: Codable>: NetworkService<Response, Output> {
     private func dataHandling(from responce: Response) -> Observer<Output> {
         let entity = Observer<Output>()
         guard let data = responce.data else {
-                return entity.add(DataHandleError.dataHandleError)
+                return entity.add(NSError())
         }
         debugPrint(responce.arrayOfJson.isEmpty ? responce.json : responce.arrayOfJson)
         do {
@@ -28,7 +28,7 @@ open class ContentHandler<Output: Codable>: NetworkService<Response, Output> {
             entity.add(json)
         }
         catch {
-            entity.add(DataHandleError.unknowError(error))
+            entity.add(NSError())
         }
         return entity
     }
