@@ -29,14 +29,14 @@ open class HTTPErrorHandler<Output>: NetworkService<Response, Output> {
     
     // MARK: - Public methods
     
-    override func throwNext(_ data: Response) -> OperationEntity<Output> {
+    override func throwNext(_ data: Response) -> Observer<Output> {
         return codeHandler(data)
     }
     
     // MARK: - Private methods
     
-    func codeHandler(_ data: Response) -> OperationEntity<Output> {
-        let entity = OperationEntity<Output>()
+    func codeHandler(_ data: Response) -> Observer<Output> {
+        let entity = Observer<Output>()
         switch data.code {
         case Constants.success.rawValue:
             return nextService.throwNext(data)

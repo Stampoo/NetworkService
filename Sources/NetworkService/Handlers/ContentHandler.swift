@@ -11,14 +11,14 @@ open class ContentHandler<Output: Codable>: NetworkService<Response, Output> {
     
     // MARK: - Public properties
     
-    override func throwNext(_ data: Response) -> OperationEntity<Output> {
+    override func throwNext(_ data: Response) -> Observer<Output> {
         return dataHandling(from: data)
     }
     
     // MARK: - Private methods
     
-    private func dataHandling(from responce: Response) -> OperationEntity<Output> {
-        let entity = OperationEntity<Output>()
+    private func dataHandling(from responce: Response) -> Observer<Output> {
+        let entity = Observer<Output>()
         guard let data = responce.data else {
                 return entity.add(DataHandleError.dataHandleError)
         }

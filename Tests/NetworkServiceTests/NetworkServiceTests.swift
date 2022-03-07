@@ -18,7 +18,7 @@ final class NetworkServiceTests: XCTestCase {
         wait(for: [expectationResult], timeout: 3.0)
     }
     
-    func testRequest() -> OperationEntity<Test> {
+    func testRequest() -> Observer<Test> {
         networkService.startSession(on: .test)
     }
     

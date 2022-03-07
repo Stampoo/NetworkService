@@ -21,19 +21,19 @@ open class ErrorHandler<Output>: NetworkService<Response, Output> {
     
     // MARK: - Public methods
     
-    override func throwNext(_ data: Response) -> OperationEntity<Output> {
+    override func throwNext(_ data: Response) -> Observer<Output> {
         return handlingError(data)
     }
     
     // MARK: - Private methods
     
-    private func handlingError(_ data: Response) -> OperationEntity<Output> {
+    private func handlingError(_ data: Response) -> Observer<Output> {
         guard let error = data.error else {
             print("Запрос выполнен успешно")
             return nextService.throwNext(data)
         }
         print("Ошибка в запросе: \(error.localizedDescription)")
-        return OperationEntity<Output>().add(error)
+        return Observer<Output>().add(error)
     }
 
 }
