@@ -16,9 +16,9 @@ final class NetworkCore {
     
     // MARK: - Internal methods
     
-    func loadRequest(from requestParameters: () throws -> RequestProtocol,
+    func loadRequest(from requestParameters: RequestProtocol,
                      onLoadComplete: @escaping (Response) -> Void) throws {
-        dataTask = session.dataTask(with: try requestParameters().getRequest()) { data, response, error in
+        dataTask = session.dataTask(with: try requestParameters.getRequest()) { data, response, error in
             let response = Response(data: data, response: response, error: error)
             onLoadComplete(response)
         }
