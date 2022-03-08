@@ -30,6 +30,7 @@ extension ResponseContext: ResponseTransformProtocol {
         case transformWasNotStart = "Transform not was processed, context does not contain information for transformation"
     }
     
+    @discardableResult
     public func map<Output>(_ transform: @escaping (Input) throws -> Output) rethrows -> ResponseContext<Output> {
         guard case let .data(transformableData) = storedResult else {
             fatalError(Errors.transformWasNotStart.rawValue)

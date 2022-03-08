@@ -12,7 +12,10 @@ open class NetworkSession {
     // MARK: - Private properties
     
     private let core = NetworkCore()
-    private var responseContext: ResponseContext<Response>?
+    private var responseContext: ResponseContext<Response>? {
+        didSet { printDebugInformation() }
+    }
+    private var onComplete: () -> Void = {}
     
     // MARK: - Public methods
     
@@ -28,15 +31,26 @@ open class NetworkSession {
         }
     }
     
+    func onComplete(_ onComplete: @escaping () -> Void) {
+        self.onComplete = onComplete
+    }
+    
     // MARK: - Private methods
     
-    func startSession(url: URL?,
+    private func startSession(url: URL?,
                       method: RequestMethod,
                       parameters: ParametersEncodingType,
                       headers: [String: String]) throws {
         let requestBuilder = try RequestBuilder(url: url, method: method, parameters: parameters, headers: headers)
         try core.loadRequest(from: requestBuilder.request) { [weak self] response in
             self?.responseContext = ResponseContext<Response>(storedResult: .data(response))
+        }
+    }
+    
+    private func printDebugInformation() {
+        responseContext?.map { response in
+            print(response.code)
+            self.onComplete()
         }
     }
     
