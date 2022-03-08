@@ -9,7 +9,7 @@ import Foundation
 
 protocol RequestParametersProtocol {
     
-    var body: Data { get }
+    var body: Data? { get }
     var queryItems: [URLQueryItem] { get }
     
 }

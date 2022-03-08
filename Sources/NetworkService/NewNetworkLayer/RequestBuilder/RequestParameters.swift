@@ -9,7 +9,7 @@ import Foundation
 
 struct RequestParameters: RequestParametersProtocol {
     
-    let body: Data
+    let body: Data?
     let queryItems: [URLQueryItem]
     
     init(from encodingType: ParametersEncodingType) throws {
@@ -18,7 +18,7 @@ struct RequestParameters: RequestParametersProtocol {
             self.body = try JSONSerialization.data(withJSONObject: parameters, options: [])
             self.queryItems = []
         case .query(let parameters):
-            self.body = Data()
+            self.body = nil
             self.queryItems = parameters.map { URLQueryItem(name: $0.key, value: "\($0.value)") }
         }
     }
