@@ -2,50 +2,29 @@ import XCTest
 @testable import NetworkService
 
 final class NetworkServiceTests: XCTestCase {
+
+    func testForTestRequest() throws {
+        let dataTask = DataTaskProcessor()
+        let expectationCase = expectation(description: "Test")
+        dataTask.startTask(url: TestRoute.url, method: .get)
+            .map(on: Test.self)
+            .onComplete { _ in
+                expectationCase.fulfill()
+            }
     
-    // MARK: - Get
-    
-    private let networkService = SessionManager<TestRoute>()
-    
-    func testForTestRequest() {
-        let expectationResult = XCTestExpectation(description: "Json loading success!")
-        testRequest()
-            .onCompleted { _ in
-                expectationResult.fulfill()
-            }.onError {
-                XCTFail($0.localizedDescription)
-        }
-        wait(for: [expectationResult], timeout: 3.0)
-    }
-    
-    func testRequest() -> OperationEntity<Test> {
-        networkService.startSession(on: .test)
+        waitForExpectations(timeout: 2, handler: nil)
     }
     
 }
 
 enum TestRoute {
-    case test
-}
-
-extension TestRoute: NetworkRoute {
     
-    var baseLink: String {
-        "https://jsonplaceholder.typicode.com"
-    }
-    
-    var path: String {
-        "/todos/1"
-    }
-    
-    var requestType: RequestType {
-        .request
-    }
-    
-    var requestMethod: RequestMethod {
-        .GET
-    }
+    private static let baseLink = "https://jsonplaceholder.typicode.com"
+    private static let path = "/todos/1"
+    static let url = URL(string: baseLink + path)
 
 }
+
+
 
 struct Test: Codable { }

@@ -1,19 +1,17 @@
 //
-//  File.swift
+//  Response.swift
 //  
 //
-//  Created by fivecoil on 23.10.2020.
+//  Created by Князьков Илья on 07.03.2022.
 //
 
 import Foundation
 
 public struct Response {
     let data: Data?
-    let error: Error?
     let response: URLResponse?
+    let error: Error?
 }
-
-// MARK: - Extensions
 
 extension Response {
     
@@ -23,20 +21,20 @@ extension Response {
         (response as? HTTPURLResponse)?.statusCode ?? .zero
     }
     
-    var json: Json {
+    var json: [String: Any] {
         guard let data = data else {
-            return Json()
+            return [String: Any]()
         }
         let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments)
-        return (json as? Json) ?? Json()
+        return (json as? [String: Any]) ?? [String: Any]()
     }
     
-    var arrayOfJson: [Json] {
+    var arrayOfJson: [[String: Any] ] {
         guard let data = data else {
-            return [Json]()
+            return [[String: Any]]()
         }
         let arrayOfJson = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
-        return (arrayOfJson as? [Json]) ?? [Json]()
+        return (arrayOfJson as? [[String: Any] ]) ?? [[String: Any]]()
     }
     
 }

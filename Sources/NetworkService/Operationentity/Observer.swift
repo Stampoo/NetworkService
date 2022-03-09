@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  OperationEntity.swift
 //  
 //
 //  Created by fivecoil on 23.10.2020.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-open class OperationEntity<Model>: EntityService {
+open class Observer<Model>: EntityService {
     
     // MARK: - Typealias
     
@@ -19,13 +19,13 @@ open class OperationEntity<Model>: EntityService {
     private(set) var errorHandler: ((Error) -> Void)?
     private(set) var writtenData: Model?
     private(set) var writtenError: Error?
-    private(set) var queueType: QueueType = .main
+    private(set) var queue: DispatchQueue = .global(qos: .utility)
     
     // MARK: - Public methods
     
     @discardableResult
-    public func inQueue(_ queue: QueueType) -> Self {
-        queueType = queue
+    public func inQueue(_ queue: DispatchQueue) -> Self {
+        self.queue = queue
         return self
     }
     
@@ -71,7 +71,7 @@ open class OperationEntity<Model>: EntityService {
         return self
     }
     
-    func devouring(_ entity: OperationEntity<Model>) {
+    func devouring(_ entity: Observer<Model>) {
         if let data = entity.writtenData {
             add(data)
         }
@@ -83,15 +83,6 @@ open class OperationEntity<Model>: EntityService {
     // MARK: - Private methods
     
     func runInQueue(_ block: @escaping () -> Void) {
-        let queue: DispatchQueue
-        switch queueType {
-        case .main:
-            queue = DispatchQueue.main
-        case .utility:
-            queue = DispatchQueue.global(qos: .utility)
-        case .background:
-            queue = DispatchQueue.global(qos: .background)
-        }
         queue.async {
             block()
         }
