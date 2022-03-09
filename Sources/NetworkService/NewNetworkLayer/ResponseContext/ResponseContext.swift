@@ -41,7 +41,7 @@ extension ResponseContext: ResponseTransformProtocol {
     }
     
     @discardableResult
-    public func map<Output>(_ transform: @escaping (Input) throws -> Output) rethrows -> ResponseContext<Output> {
+    func map<Output>(_ transform: @escaping (Input) throws -> Output) rethrows -> ResponseContext<Output> {
         let context = ResponseContext<Output>(storedResult: .error(NSError()))
         onComplete { result in
             guard case let .data(data) = result else {
@@ -58,4 +58,9 @@ extension ResponseContext: ResponseTransformProtocol {
         return context
     }
     
+}
+
+// MARK: - ResultMapperProtocol
+
+extension ResponseContext: ResultMapperProtocol where ResponseContext.Input == Response {
 }
