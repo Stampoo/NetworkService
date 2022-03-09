@@ -19,7 +19,7 @@ open class NetworkDataTask {
     public func startTask(url: URL?,
                    method: RequestMethod,
                    parameters: ParametersEncodingType = .query(parameters: [:]),
-                          headers: [String: String] = [:]) throws -> ResponseContext<Response> {
+                          headers: [String: String] = [:]) -> ResponseContext<Response> {
         session.start(url: url, method: method, parameters: parameters, headers: headers)
         session.onComplete { [weak self] response in
             self?.responseContext.emit(.data(response))

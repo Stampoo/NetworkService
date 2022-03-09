@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol ResponseTransformProtocol {
+protocol ResponseTransformProtocol {
     
     associatedtype Input
 
