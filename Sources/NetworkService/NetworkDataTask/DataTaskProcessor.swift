@@ -13,6 +13,10 @@ open class DataTaskProcessor {
     
     private let networkDataTask = NetworkDataTask()
     
+    // MARK: - Initialization
+    
+    public init() { }
+    
     // MARK: - Public methods
     
     public func startTask(url: URL?,
