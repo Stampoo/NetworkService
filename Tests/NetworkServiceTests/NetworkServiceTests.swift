@@ -3,14 +3,16 @@ import XCTest
 
 final class NetworkServiceTests: XCTestCase {
 
-    func testForTestRequest() {
-        let session = NetworkSession()
-        session.start(url: TestRoute.url, method: .get, parameters: .query(parameters: [:]), headers: [:])
+    func testForTestRequest() throws {
+        let dataTask = DataTaskProcessor()
         let expectationCase = expectation(description: "Test")
-        session.onComplete {
-            expectationCase.fulfill()
-        }
-        waitForExpectations(timeout: 5, handler: nil)
+        dataTask.startTask(url: TestRoute.url, method: .get)
+            .map(on: Test.self)
+            .onComplete { _ in
+                expectationCase.fulfill()
+            }
+    
+        waitForExpectations(timeout: 2, handler: nil)
     }
     
 }
