@@ -7,7 +7,13 @@
 
 import Foundation
 
-open class Context<Input> {
+open class Context<Input>: AnyResponseContex<Input> {
+    
+    // MARK: - Nested types
+    
+    private enum Errors: Error {
+        case inputDataWasNotFound
+    }
     
     // MARK: - Private properties
     
@@ -22,7 +28,7 @@ open class Context<Input> {
     
     // MARK: - Initialization
     
-    public init() { }
+    public override init() { }
     
     // MARK: - Public properties
     
@@ -40,7 +46,9 @@ open class Context<Input> {
         return self
     }
     
-    public func onComplete(_ onComplete: @escaping (Input) -> Void) {
+    // MARK: - AnyResponseContex
+    
+    public override func onComplete(_ onComplete: @escaping (Input) -> Void) {
         self.onComplete = onComplete
         guard let data = lastSendedData else {
             return
@@ -48,26 +56,30 @@ open class Context<Input> {
         onComplete(data)
     }
     
-    public func onError(_ onError: @escaping (Error) -> Void) {
+    public override func onError(_ onError: @escaping (Error) -> Void) {
         self.onError = onError
         guard let error = lastSendedError else {
             return
         }
         onError(error)
     }
-
-}
-
-// MARK: - ResponseTransformProtocol
-
-extension Context: ResponseTransformProtocol {
     
-    private enum Errors: String, Error {
-        case transformWasNotStart = "Transform not was processed, context does not contain information for transformation"
+    open override func decode<Output: Decodable>(on type: Output.Type) -> AnyResponseContex<Output> {
+        do {
+           return try map { response in
+                guard let response = response as? Response, let data = response.data else {
+                    throw Errors.inputDataWasNotFound
+                }
+                return try JSONDecoder().decode(Output.self, from: data)
+            }
+        }
+        catch {
+            return Context<Output>().send(error)
+        }
     }
     
     @discardableResult
-    func map<Output>(_ transform: @escaping (Input) throws -> Output) rethrows -> Context<Output> {
+    public override func map<Output>(_ transform: @escaping (Input) throws -> Output) rethrows -> Context<Output> {
         let context = Context<Output>()
         onComplete { data in
             do {
@@ -79,12 +91,7 @@ extension Context: ResponseTransformProtocol {
         }
         return context
     }
-    
-}
 
-// MARK: - ResultMapperProtocol
-
-extension Context: ResultMapperProtocol where Context.Input == Response {
 }
 
 // MARK: - Private methods

@@ -7,7 +7,10 @@ final class NetworkServiceTests: XCTestCase {
         let dataTask = DataTaskProcessor()
         let expectationCase = expectation(description: "Test")
         dataTask.startTask(url: TestRoute.url, method: .get)
-            .map(on: Test.self)
+            .decode(on: Test.self)
+            .map { _ in
+                return String()
+            }
             .onComplete { _ in
                 expectationCase.fulfill()
             }

@@ -9,13 +9,13 @@ import Foundation
 
 public protocol ResultMapperProtocol {
     
-    func map<Output: Decodable>(on type: Output.Type) -> Context<Output>
+    func map<Output: Decodable>(on type: Output.Type) -> AnyResponseContex<Output>
     
 }
 
 extension ResultMapperProtocol where Self: Context<Response> {
     
-    public func map<Output: Decodable>(on type: Output.Type) -> Context<Output> {
+    public func map<Output: Decodable>(on type: Output.Type) -> AnyResponseContex<Output> {
         do {
            return try map { response in
                 guard let data = response.data else {
