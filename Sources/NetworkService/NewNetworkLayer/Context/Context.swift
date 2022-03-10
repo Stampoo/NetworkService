@@ -42,10 +42,18 @@ open class Context<Input> {
     
     public func onComplete(_ onComplete: @escaping (Input) -> Void) {
         self.onComplete = onComplete
+        guard let data = lastSendedData else {
+            return
+        }
+        onComplete(data)
     }
     
     public func onError(_ onError: @escaping (Error) -> Void) {
         self.onError = onError
+        guard let error = lastSendedError else {
+            return
+        }
+        onError(error)
     }
 
 }
