@@ -9,23 +9,23 @@ import Foundation
 
 public protocol ResultMapperProtocol {
     
-    func map<Output: Decodable>(on type: Output.Type) -> ResponseContext<Output>
+    func map<Output: Decodable>(on type: Output.Type) -> Context<Output>
     
 }
 
-extension ResultMapperProtocol where Self: ResponseContext<Response> {
+extension ResultMapperProtocol where Self: Context<Response> {
     
-    public func map<Output: Decodable>(on type: Output.Type) -> ResponseContext<Output> {
+    public func map<Output: Decodable>(on type: Output.Type) -> Context<Output> {
         do {
            return try map { response in
                 guard let data = response.data else {
-                    throw NSError()
+                    throw response.error ?? NSError()
                 }
                 return try JSONDecoder().decode(Output.self, from: data)
             }
         }
         catch {
-            return ResponseContext<Output>(storedResult: .error(error))
+            return Context<Output>().send(error)
         }
     }
     

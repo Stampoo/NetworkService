@@ -13,6 +13,6 @@ protocol ResponseTransformProtocol {
 
     @inlinable
     @discardableResult
-    func map<Output>(_ transform: @escaping (Input) throws -> Output) rethrows -> ResponseContext<Output>
+    func map<Output>(_ transform: @escaping (Input) throws -> Output) rethrows -> Context<Output>
 
 }

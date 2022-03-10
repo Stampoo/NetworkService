@@ -22,7 +22,7 @@ open class DataTaskProcessor {
     public func startTask(url: URL?,
                           method: RequestMethod,
                           parameters: ParametersEncodingType = .query(parameters: [:]),
-                          headers: [String: String] = [:]) -> ResponseContext<Response> {
+                          headers: [String: String] = [:]) -> Context<Response> {
         networkDataTask
             .startTask(url: url, method: method, parameters: parameters, headers: headers)
     }

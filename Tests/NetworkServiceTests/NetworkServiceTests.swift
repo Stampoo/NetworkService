@@ -11,7 +11,7 @@ final class NetworkServiceTests: XCTestCase {
             .onComplete { _ in
                 expectationCase.fulfill()
             }
-    
+
         waitForExpectations(timeout: 2, handler: nil)
     }
     
