@@ -18,6 +18,7 @@ final class NetworkCore {
     
     func loadRequest(from requestParameters: RequestProtocol,
                      onLoadComplete: @escaping (Response) -> Void) throws {
+        DrainObjectTester.saveWeakReference(on: self)
         dataTask = session.dataTask(with: try requestParameters.getRequest()) { data, response, error in
             let response = Response(data: data, response: response, error: error)
             onLoadComplete(response)

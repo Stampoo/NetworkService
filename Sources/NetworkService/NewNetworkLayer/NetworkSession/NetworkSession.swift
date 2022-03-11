@@ -20,6 +20,7 @@ open class NetworkSession {
                       method: RequestMethod,
                       parameters: ParametersEncodingType,
                       headers: [String: String]) {
+        DrainObjectTester.saveWeakReference(on: self)
         do {
             try startSession(url: url, method: method, parameters: parameters, headers: headers)
         }

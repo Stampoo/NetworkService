@@ -15,7 +15,9 @@ open class DataTaskProcessor {
     
     // MARK: - Initialization
     
-    public init() { }
+    public init() {
+        DrainObjectTester.saveWeakReference(on: self)
+    }
     
     // MARK: - Public methods
     

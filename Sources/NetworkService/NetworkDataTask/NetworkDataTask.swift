@@ -20,9 +20,11 @@ open class NetworkDataTask {
                    method: RequestMethod,
                    parameters: ParametersEncodingType = .query(parameters: [:]),
                           headers: [String: String] = [:]) -> Context<Response> {
+        DrainObjectTester.saveWeakReference(on: self)
         session.start(url: url, method: method, parameters: parameters, headers: headers)
         session.onComplete { [responseContext] response in
             responseContext.send(response)
+            DrainObjectTester.saveWeakReference(on: responseContext)
         }
         return responseContext
     }
