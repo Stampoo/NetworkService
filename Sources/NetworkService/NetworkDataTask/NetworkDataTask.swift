@@ -21,8 +21,8 @@ open class NetworkDataTask {
                    parameters: ParametersEncodingType = .query(parameters: [:]),
                           headers: [String: String] = [:]) -> Context<Response> {
         session.start(url: url, method: method, parameters: parameters, headers: headers)
-        session.onComplete { [weak self] response in
-            self?.responseContext.send(response)
+        session.onComplete { [responseContext] response in
+            responseContext.send(response)
         }
         return responseContext
     }

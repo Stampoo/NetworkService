@@ -12,7 +12,7 @@ open class NetworkSession {
     // MARK: - Private properties
     
     private let core = NetworkCore()
-    private var onComplete: (Response) -> Void = { _ in }
+    private var onComplete: ((Response) -> Void)?
     
     // MARK: - Public methods
     
@@ -24,7 +24,7 @@ open class NetworkSession {
             try startSession(url: url, method: method, parameters: parameters, headers: headers)
         }
         catch {
-            onComplete(Response(data: nil, response: nil, error: error))
+            onComplete?(Response(data: nil, response: nil, error: error))
         }
     }
     
@@ -41,8 +41,8 @@ open class NetworkSession {
                       parameters: ParametersEncodingType,
                       headers: [String: String]) throws {
         let requestBuilder = try RequestBuilder(url: url, method: method, parameters: parameters, headers: headers)
-        try core.loadRequest(from: requestBuilder.request) { [weak self] response in
-            self?.onComplete(response)
+        try core.loadRequest(from: requestBuilder.request) { [self] response in
+            self.onComplete?(response)
         }
     }
     
