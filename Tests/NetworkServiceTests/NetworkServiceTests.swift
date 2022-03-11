@@ -19,15 +19,3 @@ final class NetworkServiceTests: XCTestCase {
     }
     
 }
-
-enum TestRoute {
-    
-    private static let baseLink = "https://jsonplaceholder.typicode.com"
-    private static let path = "/todos/1"
-    static let url = URL(string: baseLink + path)
-
-}
-
-
-
-struct Test: Codable { }
