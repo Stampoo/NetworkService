@@ -36,6 +36,7 @@ extension Request: RequestProtocol {
             throw Errors.cantBuildUrlWithQuery
         }
         var request = URLRequest(url: buildedUrl)
+        request.httpMethod = method.method
         request.httpBody = parameters.body
         request.allHTTPHeaderFields = headers.fields
         
