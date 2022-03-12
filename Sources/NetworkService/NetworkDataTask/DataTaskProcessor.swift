@@ -9,6 +9,12 @@ import Foundation
 
 open class DataTaskProcessor {
     
+    // MARK: - Nested types
+    
+    private enum Errors: Error {
+        case dataWasNotFound
+    }
+    
     // MARK: - Private properties
     
     private let networkDataTask = NetworkDataTask()
@@ -20,6 +26,14 @@ open class DataTaskProcessor {
     }
     
     // MARK: - Public methods
+    
+    public func startTask(url: URL?,
+                          method: RequestMethod,
+                          parameters: ParametersEncodingType = .query(parameters: [:]),
+                          headers: [String: String] = [:]) -> AnyResultDecoder<Response> {
+        networkDataTask
+            .startTask(url: url, method: method, parameters: parameters, headers: headers)
+    }
     
     public func startTask(url: URL?,
                           method: RequestMethod,

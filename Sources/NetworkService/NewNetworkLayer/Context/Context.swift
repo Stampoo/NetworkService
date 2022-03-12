@@ -48,20 +48,24 @@ open class Context<Input>: AnyResponseContex<Input> {
     
     // MARK: - AnyResponseContex
     
-    public override func onComplete(_ onComplete: @escaping (Input) -> Void) {
+    @discardableResult
+    public override func onComplete(_ onComplete: @escaping (Input) -> Void) -> Self {
         self.onComplete = onComplete
         guard let data = lastSendedData else {
-            return
+            return self
         }
         onComplete(data)
+        return self
     }
     
-    public override func onError(_ onError: @escaping (Error) -> Void) {
+    @discardableResult
+    public override func onError(_ onError: @escaping (Error) -> Void) -> Self {
         self.onError = onError
         guard let error = lastSendedError else {
-            return
+            return self
         }
         onError(error)
+        return self
     }
     
     open override func decode<Output: Decodable>(on type: Output.Type) -> AnyResponseContex<Output> {

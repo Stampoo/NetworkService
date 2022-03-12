@@ -8,33 +8,45 @@
 import Foundation
 
 public struct Response {
-    let data: Data?
+    
+    public let data: Data?
+    
     let response: URLResponse?
     let error: Error?
+    
 }
 
 extension Response {
     
-    // MARK: - Public properties
+    private enum Errors: Error {
+        case dataWasNotFound
+        case dataCouldNotBeDecodedAsJson
+    }
     
     var code: Int {
         (response as? HTTPURLResponse)?.statusCode ?? .zero
     }
     
-    var json: [String: Any] {
+    public func asJson() throws -> [String: Any] {
         guard let data = data else {
-            return [String: Any]()
+            throw Errors.dataWasNotFound
         }
-        let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments)
-        return (json as? [String: Any]) ?? [String: Any]()
+        let jsonObject = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+        if let json = jsonObject as? [String: Any] {
+            return json
+        }
+        throw Errors.dataCouldNotBeDecodedAsJson
     }
     
-    var arrayOfJson: [[String: Any] ] {
+    public func asArrayJson() throws -> [[String: Any]] {
         guard let data = data else {
-            return [[String: Any]]()
+            throw Errors.dataWasNotFound
         }
-        let arrayOfJson = try? JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed)
-        return (arrayOfJson as? [[String: Any] ]) ?? [[String: Any]]()
+        let jsonObject = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+        if let json = jsonObject as? [[String: Any]] {
+            return json
+        }
+        throw Errors.dataCouldNotBeDecodedAsJson
     }
     
 }

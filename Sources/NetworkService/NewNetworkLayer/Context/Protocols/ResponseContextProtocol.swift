@@ -11,24 +11,31 @@ protocol ResponseContextProtocol {
     
     associatedtype Input
     
-    func onComplete(_ onComplete: @escaping (Input) -> Void)
-    func onError(_ onError: @escaping (Error) -> Void)
+    func onComplete(_ onComplete: @escaping (Input) -> Void) -> Self
+    func onError(_ onError: @escaping (Error) -> Void) -> Self
     func decode<Output: Decodable>(on type: Output.Type) -> AnyResponseContex<Output>
     func map<Output>(_ transform: @escaping (Input) throws -> Output) rethrows -> AnyResponseContex<Output>
     
 }
 
-open class AnyResponseContex<Input>: ResponseContextProtocol {
+open class AnyResponseContex<Input>: AnyResultDecoder<Input>, ResponseContextProtocol {
     
-    open func onComplete(_ onComplete: @escaping (Input) -> Void) { }
-    open func onError(_ onError: @escaping (Error) -> Void) { }
+    @discardableResult
+    open func onComplete(_ onComplete: @escaping (Input) -> Void) -> Self {
+        self
+    }
     
-    open func decode<Output: Decodable>(on type: Output.Type) -> AnyResponseContex<Output> {
+    @discardableResult
+    open func onError(_ onError: @escaping (Error) -> Void) -> Self {
+        self
+    }
+    
+    open override func decode<Output: Decodable>(on type: Output.Type) -> AnyResponseContex<Output> {
         AnyResponseContex<Output>()
     }
     
     @discardableResult
-    func map<Output>(_ transform: @escaping (Input) throws -> Output) rethrows -> AnyResponseContex<Output> {
+    open func map<Output>(_ transform: @escaping (Input) throws -> Output) rethrows -> AnyResponseContex<Output> {
         AnyResponseContex<Output>()
     }
     
