@@ -19,7 +19,9 @@ protocol ResponseContextProtocol {
     
 }
 
-open class AnyResponseContex<Input>: AnyResultDecoder<Input>, ResponseContextProtocol {
+open class AnyResponseContex<Input>: AnyResultDecoder<Input>, ResponseContextProtocol, QueuePerformProtocol {
+    
+    // MARK: - ResponseContextProtocol
     
     @discardableResult
     open func onComplete(_ onComplete: @escaping (Input) -> Void) -> Self {
@@ -41,5 +43,11 @@ open class AnyResponseContex<Input>: AnyResultDecoder<Input>, ResponseContextPro
     }
     
     open func removeAllSubScriptions() { }
+    
+    // MARK: - QueuePerformProtocol
+    
+    open func perform(in queue: DispatchQueue) -> AnyResponseContex<Input> {
+        AnyResponseContex<Input>()
+    }
     
 }

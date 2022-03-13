@@ -25,6 +25,7 @@ open class Context<Input>: AnyResponseContex<Input> {
     private var onComplete: ((Input) -> Void)?
     @Atomic
     private var onError: ((Error) -> Void)?
+    private var queue: DispatchQueue = .main
     
     // MARK: - Initialization
     
@@ -103,6 +104,11 @@ open class Context<Input>: AnyResponseContex<Input> {
         cleanStoredData()
         removeCurrentSubscriptions()
     }
+    
+    open override func perform(in queue: DispatchQueue) -> AnyResponseContex<Input> {
+        self.queue = queue
+        return self
+    }
 
 }
 
@@ -111,13 +117,17 @@ open class Context<Input>: AnyResponseContex<Input> {
 extension Context {
     
     func performCompletion(send newValue: Input) {
-        onComplete?(newValue)
-        cleanStoredData()
+        queue.async {
+            self.onComplete?(newValue)
+            self.cleanStoredData()
+        }
     }
     
     func performErrorNotification(send error: Error) {
-        onError?(error)
-        cleanStoredData()
+        queue.async {
+            self.onError?(error)
+            self.cleanStoredData()
+        }
     }
     
     func removeCurrentSubscriptions() {
