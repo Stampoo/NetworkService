@@ -12,9 +12,9 @@ public struct RequestBuilder: RequestBuilderProtocol {
     public var request: RequestProtocol
     
     public init(url: URL?,
-                         method: RequestMethod,
-                         parameters: ParametersEncodingType,
-                         headers: [String: String]) throws {
+                method: RequestMethod,
+                parameters: ParametersEncodingType,
+                headers: [String: String]) throws {
         self.request = Request(
             url: url,
             method: method,
