@@ -22,9 +22,9 @@ open class Context<Input>: AnyResponseContex<Input> {
     @Atomic
     private var lastSendedError: Error?
     @Atomic
-    private var onComplete: (Input) -> Void = { _ in }
+    private var onComplete: ((Input) -> Void)?
     @Atomic
-    private var onError: (Error) -> Void = { _ in }
+    private var onError: ((Error) -> Void)?
     
     // MARK: - Initialization
     
@@ -93,7 +93,15 @@ open class Context<Input>: AnyResponseContex<Input> {
                 context.send(error)
             }
         }
+        onError { error in
+            context.send(error)
+        }
         return context
+    }
+    
+    public override func removeAllSubScriptions() {
+        cleanStoredData()
+        removeCurrentSubscriptions()
     }
 
 }
@@ -103,16 +111,21 @@ open class Context<Input>: AnyResponseContex<Input> {
 extension Context {
     
     func performCompletion(send newValue: Input) {
-        onComplete(newValue)
-        clean()
+        onComplete?(newValue)
+        cleanStoredData()
     }
     
     func performErrorNotification(send error: Error) {
-        onError(error)
-        clean()
+        onError?(error)
+        cleanStoredData()
     }
     
-    func clean() {
+    func removeCurrentSubscriptions() {
+        onComplete = nil
+        onError = nil
+    }
+    
+    func cleanStoredData() {
         lastSendedData = nil
         lastSendedError = nil
     }

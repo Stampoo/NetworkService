@@ -15,6 +15,7 @@ protocol ResponseContextProtocol {
     func onError(_ onError: @escaping (Error) -> Void) -> Self
     func decode<Output: Decodable>(on type: Output.Type) -> AnyResponseContex<Output>
     func map<Output>(_ transform: @escaping (Input) throws -> Output) rethrows -> AnyResponseContex<Output>
+    func removeAllSubScriptions()
     
 }
 
@@ -38,5 +39,7 @@ open class AnyResponseContex<Input>: AnyResultDecoder<Input>, ResponseContextPro
     open func map<Output>(_ transform: @escaping (Input) throws -> Output) rethrows -> AnyResponseContex<Output> {
         AnyResponseContex<Output>()
     }
+    
+    open func removeAllSubScriptions() { }
     
 }
