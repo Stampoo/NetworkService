@@ -30,5 +30,16 @@ open class NetworkDataTask {
         }
         return responseContext
     }
-
+    
+    public func startTask(context: AnyResponseContex<RequestBuilderProtocol>) -> Context<Response> {
+        DrainObjectTester.saveWeakReference(on: self)
+        context.map { [weak self, responseContext] requestBuilder in
+            try self?.core.loadRequest(from: try requestBuilder.build()) {  response in
+                responseContext.send(response)
+                DrainObjectTester.saveWeakReference(on: responseContext)
+            }
+        }
+        return responseContext
+    }
+    
 }

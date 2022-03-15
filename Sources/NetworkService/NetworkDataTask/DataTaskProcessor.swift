@@ -45,6 +45,10 @@ open class DataTaskProcessor {
         
     }
     
+    public func startTask(context: AnyResponseContex<RequestBuilderProtocol>) -> AnyResponseContex<Response> {
+        networkDataTask.startTask(context: context)
+    }
+    
     // MARK: - Private methods
     
     private func startDataTask(requestBuilder: RequestBuilderProtocol) -> AnyResponseContex<Response> {
