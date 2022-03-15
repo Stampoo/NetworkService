@@ -35,14 +35,6 @@ open class DataTaskProcessor {
             .startTask(url: url, method: method, parameters: parameters, headers: headers)
     }
     
-    public func startTask(url: URL?,
-                          method: RequestMethod,
-                          parameters: ParametersEncodingType = .query(parameters: [:]),
-                          headers: [String: String] = [:]) -> AnyResponseContex<Response> {
-        networkDataTask
-            .startTask(url: url, method: method, parameters: parameters, headers: headers)
-    }
-    
     public func startTask<Output: Decodable>(url: URL?,
                           method: RequestMethod,
                           parameters: ParametersEncodingType = .query(parameters: [:]),
