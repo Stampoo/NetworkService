@@ -16,17 +16,12 @@ public protocol ResultMapperProtocol {
 extension ResultMapperProtocol where Self: Context<Response> {
     
     public func map<Output: Decodable>(on type: Output.Type) -> AnyResponseContex<Output> {
-        do {
-           return try map { response in
-                guard let data = response.data else {
-                    throw response.error ?? NSError()
-                }
-                return try JSONDecoder().decode(Output.self, from: data)
-            }
-        }
-        catch {
-            return Context<Output>().send(error)
-        }
+        map { response in
+             guard let data = response.data else {
+                 throw response.error ?? NSError()
+             }
+             return try JSONDecoder().decode(Output.self, from: data)
+         }
     }
     
 }

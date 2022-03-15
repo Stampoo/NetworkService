@@ -70,21 +70,16 @@ open class Context<Input>: AnyResponseContex<Input> {
     }
     
     open override func decode<Output: Decodable>(on type: Output.Type) -> AnyResponseContex<Output> {
-        do {
-           return try map { response in
-                guard let response = response as? Response, let data = response.data else {
-                    throw Errors.inputDataWasNotFound
-                }
-                return try JSONDecoder().decode(Output.self, from: data)
-            }
-        }
-        catch {
-            return Context<Output>().send(error)
-        }
+        map { response in
+             guard let response = response as? Response, let data = response.data else {
+                 throw Errors.inputDataWasNotFound
+             }
+             return try JSONDecoder().decode(Output.self, from: data)
+         }
     }
     
     @discardableResult
-    public override func map<Output>(_ transform: @escaping (Input) throws -> Output) rethrows -> Context<Output> {
+    public override func map<Output>(_ transform: @escaping (Input) throws -> Output) -> Context<Output> {
         let context = Context<Output>()
         onComplete { data in
             do {
