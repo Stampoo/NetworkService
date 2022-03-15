@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Request {
+public struct Request {
     
     let url: URL?
     let method: RequestMethodProtocol
@@ -24,7 +24,7 @@ extension Request: RequestProtocol {
         case invalidUrl
     }
     
-    func getRequest() throws -> URLRequest {
+    public func getRequest() throws -> URLRequest {
         guard let url = url else {
             throw Errors.invalidUrl
         }

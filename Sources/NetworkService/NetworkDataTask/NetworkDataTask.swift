@@ -17,14 +17,10 @@ open class NetworkDataTask {
     
     // MARK: - Public methods
     
-    public func startTask(url: URL?,
-                          method: RequestMethod,
-                          parameters: ParametersEncodingType = .query(parameters: [:]),
-                          headers: [String: String] = [:]) -> Context<Response> {
+    public func startTask(requestBuilder: RequestBuilderProtocol) -> Context<Response> {
         DrainObjectTester.saveWeakReference(on: self)
         do {
-            let requestBuilder = try RequestBuilder(url: url, method: method, parameters: parameters, headers: headers)
-            try core.loadRequest(from: requestBuilder.request) { [responseContext] response in
+            try core.loadRequest(from: try requestBuilder.build()) { [responseContext] response in
                 responseContext.send(response)
                 DrainObjectTester.saveWeakReference(on: responseContext)
             }

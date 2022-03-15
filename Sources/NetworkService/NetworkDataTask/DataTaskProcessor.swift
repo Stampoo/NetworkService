@@ -31,17 +31,24 @@ open class DataTaskProcessor {
                           method: RequestMethod,
                           parameters: ParametersEncodingType = .query(parameters: [:]),
                           headers: [String: String] = [:]) -> AnyResultDecoder<Response> {
-        networkDataTask
-            .startTask(url: url, method: method, parameters: parameters, headers: headers)
+        let requestBuilder = RequestBuilder(url: url, method: method, parameters: parameters, headers: headers)
+        return startDataTask(requestBuilder: requestBuilder)
     }
     
     public func startTask<Output: Decodable>(url: URL?,
-                          method: RequestMethod,
-                          parameters: ParametersEncodingType = .query(parameters: [:]),
-                          headers: [String: String] = [:]) -> AnyResponseContex<Output> {
-        networkDataTask
-            .startTask(url: url, method: method, parameters: parameters, headers: headers)
+                                             method: RequestMethod,
+                                             parameters: ParametersEncodingType = .query(parameters: [:]),
+                                             headers: [String: String] = [:]) -> AnyResponseContex<Output> {
+        let requestBuilder = RequestBuilder(url: url, method: method, parameters: parameters, headers: headers)
+        return startDataTask(requestBuilder: requestBuilder)
             .decode(on: Output.self)
+        
+    }
+    
+    // MARK: - Private methods
+    
+    private func startDataTask(requestBuilder: RequestBuilderProtocol) -> AnyResponseContex<Response> {
+        networkDataTask.startTask(requestBuilder: requestBuilder)
     }
     
 }
