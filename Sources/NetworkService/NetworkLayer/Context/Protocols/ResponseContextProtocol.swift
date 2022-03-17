@@ -20,11 +20,6 @@ protocol ResponseContextProtocol {
 }
 
 open class AnyResponseContex<Input>: AnyResultDecoder<Input>, ResponseContextProtocol, QueuePerformProtocol {
-    
-    @available(iOS 13, *)
-    public var publisher: AnyPublisher<Input, Error, Context<Input>> {
-        fatalError("should be overridden in subclass before use!")
-    }
 
     // MARK: - ResponseContextProtocol
     
