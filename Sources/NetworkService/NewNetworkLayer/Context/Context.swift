@@ -18,9 +18,9 @@ open class Context<Input>: AnyResponseContex<Input> {
     // MARK: - Private properties
     
     @Atomic
-    private var lastSendedData: Input?
+    public var lastSendedData: Input?
     @Atomic
-    private var lastSendedError: Error?
+    public var lastSendedError: Error?
     @Atomic
     private var onComplete: ((Input) -> Void)?
     @Atomic
@@ -48,6 +48,11 @@ open class Context<Input>: AnyResponseContex<Input> {
     }
     
     // MARK: - AnyResponseContex
+    
+    @available(iOS 13, *)
+    public override var publisher: AnyPublisher<Input, Error, Context<Input>> {
+        wrappedPublisher
+    }
     
     @discardableResult
     public override func onComplete(_ onComplete: @escaping (Input) -> Void) -> Self {
