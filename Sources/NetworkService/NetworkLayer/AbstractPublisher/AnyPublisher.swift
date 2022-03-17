@@ -7,7 +7,7 @@
 
 import Combine
 
-@available(iOS 13, *)
+@available(iOS 13, macOS 10.15, *)
 public struct AnyPublisher<Model, AbstractError,
                            AbstractEventTransceiver: EventTransceiverProtocol>: Publisher
 where AbstractEventTransceiver.AbstractError == AbstractError,

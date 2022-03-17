@@ -7,7 +7,7 @@
 
 import Foundation
 
-@available(iOS 13, *)
+@available(iOS 13, macOS 10.15, *)
 extension Context: EventTransceiverProtocol {
 
     public typealias Output = Input
