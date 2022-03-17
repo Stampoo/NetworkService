@@ -18,10 +18,12 @@ open class DataTaskProcessor {
     // MARK: - Private properties
     
     private let networkDataTask = NetworkDataTask()
+    private let requestTransformer: RequestTransformer
     
     // MARK: - Initialization
     
-    public init() {
+    public init(requestTransformer: RequestTransformer = RequestTransformer()) {
+        self.requestTransformer = requestTransformer
         DrainObjectTester.saveWeakReference(on: self)
     }
     
@@ -32,7 +34,7 @@ open class DataTaskProcessor {
                           parameters: ParametersEncodingType = .query(parameters: [:]),
                           headers: [String: String] = [:]) -> AnyResultDecoder<Response> {
         let requestBuilder = RequestBuilder(url: url, method: method, parameters: parameters, headers: headers)
-        return startDataTask(requestBuilder: requestBuilder)
+        return networkDataTask.startTask(context: requestTransformer.transform(input: requestBuilder))
     }
     
     public func startTask<Output: Decodable>(url: URL?,
@@ -40,19 +42,9 @@ open class DataTaskProcessor {
                                              parameters: ParametersEncodingType = .query(parameters: [:]),
                                              headers: [String: String] = [:]) -> AnyResponseContex<Output> {
         let requestBuilder = RequestBuilder(url: url, method: method, parameters: parameters, headers: headers)
-        return startDataTask(requestBuilder: requestBuilder)
+        return networkDataTask.startTask(context: requestTransformer.transform(input: requestBuilder))
             .decode(on: Output.self)
         
     }
-    
-    public func startTask(context: AnyResponseContex<RequestBuilderProtocol>) -> AnyResponseContex<Response> {
-        networkDataTask.startTask(context: context)
-    }
-    
-    // MARK: - Private methods
-    
-    private func startDataTask(requestBuilder: RequestBuilderProtocol) -> AnyResponseContex<Response> {
-        networkDataTask.startTask(requestBuilder: requestBuilder)
-    }
-    
+
 }
