@@ -49,7 +49,7 @@ open class Context<Input>: AnyResponseContex<Input> {
     
     // MARK: - AnyResponseContex
     
-    @available(iOS 13, *)
+    @available(iOS 13, macOS 10.15, *)
     public override var publisher: AnyPublisher<Input, Error, Context<Input>> {
         wrappedPublisher
     }

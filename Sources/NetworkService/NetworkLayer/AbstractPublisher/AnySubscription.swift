@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 
-@available(iOS 13, *)
+@available(iOS 13, macOS 10.15, *)
 class AnySubscription<AbstractSubscriber: Subscriber,
                       Model, AbstractError,
                       AbstractEventTransceiver: EventTransceiverProtocol>: Subscription
