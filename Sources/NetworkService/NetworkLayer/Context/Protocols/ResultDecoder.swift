@@ -11,7 +11,7 @@ protocol ResultDecoder {
     
     associatedtype Input
     
-    @available(iOS 13, *)
+    @available(iOS 13, macOS 10.15, *)
     var publisher: AnyPublisher<Input, Error, Context<Input>> { get }
 
     func decode<Output: Decodable>(on type: Output.Type) -> AnyResponseContex<Output>
@@ -20,7 +20,7 @@ protocol ResultDecoder {
 
 open class AnyResultDecoder<Input> {
     
-    @available(iOS 13, *)
+    @available(iOS 13, macOS 10.15, *)
     public var publisher: AnyPublisher<Input, Error, Context<Input>> {
         fatalError("should be overridden in subclass before use!")
     }
